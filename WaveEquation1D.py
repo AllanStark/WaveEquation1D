@@ -28,7 +28,8 @@ class WaveEquation1D(LinearSystem):
         k=self.k
         dx= self.dx
         n= self.n
-        self.K= self.create_TridiagMatrix(n,(-np.sqrt(k*DL**2)/dx)**2.0)
+        ScaleFac= (-np.sqrt(k*DL**2)/dx)**2.0
+        self.K= self.create_TridiagMatrix(n,ScaleFac)
         self.D= self.alpha*self.K
 
     def solve(self,in_f,x0,plot_flag=0):
