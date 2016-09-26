@@ -14,7 +14,7 @@ class WaveEquation1D(LinearSystem):
         self.k=k;
         self.m=m;
         self.alpha=alpha;
-        self.L= L
+        self.L= np.asarray(L)
 
         self.s= np.linspace(0,self.DomainLength,self.n_wbn)
         self.dx= np.mean(np.diff(self.s))
@@ -32,8 +32,8 @@ class WaveEquation1D(LinearSystem):
         self.K= self.create_TridiagMatrix(n,ScaleFac)
         self.D= self.alpha*self.K
 
-    def solve(self,in_f,x0,plot_flag=0):
-        super(WaveEquation1D,self).solve(in_f,x0,0)
+    def solve(self,in_f,in_t,x0,plot_flag=0):
+        super(WaveEquation1D,self).solve(in_f,in_t,x0,0)
 
         if plot_flag:
             self.plot_response()
@@ -42,13 +42,18 @@ class WaveEquation1D(LinearSystem):
         plt.ion()
         n= self.n
 
+        y_max=0
+        for i in range(len(self.tspan)):
+            tmp= np.abs(self.x_sol[i,0:n:1])
+            if np.max(tmp) > y_max:
+                y_max= np.max(tmp)
+
         for i in range(self.x_sol.shape[0]):
-            plt.axis([0, 1, -1, 1])
+            plt.axis([0, 1, -y_max*1.1, y_max*1.1])
             out= np.c_[0,self.x_sol[i,0:n:1].reshape(1,n),0]
             plt.plot(np.linspace(0,1,n+2), out.reshape(n+2,1))
+            plt.title(self.tspan[i])
             plt.pause(0.01)
             plt.cla()
 
-        while True:
-            plt.pause(0.01)
-        
+        plt.close()
