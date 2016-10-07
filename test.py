@@ -40,10 +40,7 @@ def main():
     asol = integrate.odeint(solvr, x0, tspan,args=(K,D,M,L,in_f))
     outSig= np.dot(asol,C)
 
-    EnergyDissipation= Calc_EnergyDissipation(F0,outSig)
-
     plt.plot(tspan,outSig)
-    plt.title(EnergyDissipation)
     plt.show()
 
 if __name__ == '__main__':
